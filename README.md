@@ -1,19 +1,28 @@
 Clocker
 =======
 
-Clocker contains [Brooklyn](http://brooklyn.io/) entities, locations and examples that create a [Docker](http://docker.io) cloud infrastructure.
+Clocker creates and manages a [Docker](http://docker.io) cloud infrastructure. Clocker support 
+single-click deployment and runtime management of multi-node applications that can run on
+containers distributed across multiple docker hosts. Application blueprints written for 
+[Brooklyn](https://brooklyn.incubator.apache.org/) can thus be deployed to a Docker cloud 
+infrastructure.
+
+This repo contains [Brooklyn](http://brooklyn.io/) entities, locations and examples for this.
 
 ## Getting started
 
-This project requires a Docker instance that Brooklyn will use as a target location when deploying application
-blueprints.
+To get started, you just have to download Clocker, deploy the DockerCloud blueprint to 
+the cloud or machines of your choice, and then use Clocker to deploy your applications.
+This will automatically create the required Docker containers.
 
-You can use Brooklyn to install Docker onto a single existing machine, or create a Docker based cloud infrastructure on
-your favourite cloud provider or on a private cloud using any of the [jclouds](http://jclouds.apache.org) supported APIs.
+You can create a Docker based cloud infrastructure on your favourite cloud provider or on a 
+private cloud using any of the [jclouds supported APIs](http://jclouds.apache.org/reference/providers/).
+Alternatively you can target one or more existing machines for running Docker.
 
-To install a Docker cloud infrastucture using the Clocker Brooklyn entities, there is an example blueprint at
-[DockerCloud](https://raw.githubusercontent.com/brooklyncentral/clocker/master/examples/src/main/java/brooklyn/clocker/example/DockerCloud.java)
-or [docker-cloud.yaml](https://raw.githubusercontent.com/brooklyncentral/clocker/master/examples/src/main/assembly/files/blueprints/docker-cloud.yaml).
+If you are keen to peek under the covers, you can find the Clocker Infrastructure blueprint at
+[docker-cloud.yaml](https://raw.githubusercontent.com/brooklyncentral/clocker/master/examples/src/main/assembly/files/blueprints/docker-cloud.yaml). 
+Or if you prefer Java take a look at 
+[DockerCloud](https://raw.githubusercontent.com/brooklyncentral/clocker/master/examples/src/main/java/brooklyn/clocker/example/DockerCloud.java).
 
 ### Using the latest Clocker release
 
@@ -27,6 +36,26 @@ You can build a *Docker Cloud Infrastructure* running these commands:
 ```
 Where `<location>` can be e.g. `jclouds:softlayer`, or a named location or a fixed IP e.g. `byon:(hosts="1.2.3.4")`.
 Those simple steps will give you a running docker instance on your favourite cloud.
+
+For anything other than a localhost or bring-your-own-nodes location, it is vital that you 
+first configure a `~/.brooklyn/brooklyn.properties` file with cloud credentials and security
+details, and create an SSH key (defaulting to `~/.ssh/id_rsa`). A simple example `brooklyn.properties` 
+file would be:
+
+```
+# Sets up a user with credentials admin:password for accessing the Brooklyn web-console.
+# To genreate the hashed password, see `brooklyn generate-password --user admin`
+brooklyn.webconsole.security.users=admin
+brooklyn.webconsole.security.user.admin.salt=DOp5
+brooklyn.webconsole.security.user.admin.sha256=ffc241eae74cd035fdab353229d53c20943d0c1b6a0a8972a4f24769d99a6826
+
+# Credentials to use in your favourite cloud
+brooklyn.location.jclouds.softlayer.identity=first.last
+brooklyn.location.jclouds.softlayer.credential=<private-key>
+
+brooklyn.location.jclouds.aws-ec2.identity = AKA_YOUR_ACCESS_KEY_ID
+brooklyn.location.jclouds.aws-ec2.credential = YourSecretKeyWhichIsABase64EncodedString
+```
 
 For more information on setting up locations, including supplying cloud provider credentials, see the [_Setting up Locations_ section of
 Brooklyn Getting Started](https://brooklyn.incubator.apache.org/quickstart/#configuring-a-location), and the more detailed [locations guide](https://brooklyn.incubator.apache.org/v/0.7.0-M1/use/guide/locations/index.html).
